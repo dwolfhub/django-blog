@@ -1,4 +1,6 @@
 from django.http import HttpResponse
+from django.shortcuts import render
+
 
 def index(request):
-	return HttpResponse("hello, man, hello.")
+    return render(request, 'posts/post.html')
