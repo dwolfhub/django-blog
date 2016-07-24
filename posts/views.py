@@ -1,6 +1,8 @@
-from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
+from posts.models import Post
 
 
-def index(request):
-    return render(request, 'posts/post.html')
+def single(request, slug=''):
+    post = get_object_or_404(Post, slug=slug)
+
+    return render(request, 'posts/post.html', {'post': post})
