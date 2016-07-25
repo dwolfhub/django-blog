@@ -1,12 +1,55 @@
 {% extends 'blog/layout.html' %}
 
+{% block title %}{{ page.title }}{% endblock %}
+
 {% block body %}
-<h1>{{ page.title }}</h1>
-<p>{{ page.content }}</p>
-<h2>Posts</h2>
-<ul>
-    {% for post in posts %}
-    <li>{{ post.published | date:"Y-m-d H:i:s" }} {{ post.title }} <a href="{% url 'posts:single' post.slug %}">Read More</a></li>
-    {% endfor %}
-</ul>
+    <div class="jumbotron">
+        <h1>{{ page.title }}</h1>
+        <p>{{ page.content }}</p>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h2 class="panel-title">Posts</h2>
+                </div>
+                <div class="panel-body">
+                    <dl>
+                        {% for post in posts %}
+                            <dt>
+                                {{ post.published | date:"m/d/y" }}
+                            </dt>
+                            <dd>
+                                <a href="{% url 'posts:single' post.slug %}">
+                                    {{ post.title }}
+                                </a>
+                            </dd>
+                        {% endfor %}
+                    </dl>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h2 class="panel-title">Tweets</h2>
+                </div>
+                <div class="panel-body">
+                    <dl>
+                        {% for tweet in tweets %}
+                            <dt>
+                                {{ tweet.created | date:"m/d/y @ h:i a" }}
+                            </dt>
+                            <dd>
+                                @{{ tweet.username }}:
+                                {{ tweet.text }}
+                            </dd>
+                        {% endfor %}
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+
 {% endblock %}

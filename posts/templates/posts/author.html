@@ -1,0 +1,28 @@
+{% extends "blog/layout.html" %}
+
+{% block body %}
+
+    <h1>Articles By {{ author.get_full_name }}</h1>
+
+    <dl>
+        {% for post in posts.object_list %}
+            <dt>
+                {{ post.published | date:"m/d/y" }}
+            </dt>
+            <dd>
+                <a href="{% url 'posts:single' post.slug %}">
+                    {{ post.title }}
+                </a>
+            </dd>
+        {% endfor %}
+    </dl>
+
+    {% if posts.has_previous %}
+        <a class="btn btn-sm btn-info" href="?page={{ posts.previous_page_number }}">&laquo; Previous</a>
+    {% endif %}
+    {% if posts.has_next %}
+        <a class="btn btn-sm btn-info" href="?page={{ posts.next_page_number }}">Next &raquo;</a>
+    {% endif %}
+
+
+{% endblock %}

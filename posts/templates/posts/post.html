@@ -1,4 +1,27 @@
+{% extends "blog/layout.html" %}
+
+{% load markdown_deux_tags %}
+
 {% block body %}
-<h1>{{ post.title }}</h1>
-{{ post.content }}
+    <article itemscope itemtype="https://schema.org/Article">
+        <h1 itemprop="headline">
+            {{ post.title }}
+        </h1>
+
+        By
+        <a href="{% url 'posts:author' post.author.username %}" itemprop="author" itemscope itemtype="https://schema.org/Person">
+            <span itemprop="name">{{ post.author.get_full_name }}</span>
+        </a>
+        on
+        <time itemprop="datePublished">
+            {{ post.published | date:"F j, Y @ g:m A" }}
+        </time>
+
+        <div itemprop="articleBody">
+            {{ post.content | markdown }}
+        </div>
+
+    </article>
+
+
 {% endblock %}
