@@ -18,7 +18,7 @@
                     <dl>
                         {% for post in posts %}
                             <dt>
-                                {{ post.published | date:"m/d/y" }}
+                                {{ post.published | date:"b d, Y - h:i a" | title}}
                             </dt>
                             <dd>
                                 <a href="{% url 'posts:single' post.slug %}">
@@ -39,7 +39,7 @@
                     <dl>
                         {% for tweet in tweets %}
                             <dt>
-                                {{ tweet.created | date:"m/d/y @ h:i a" }}
+                                {{ tweet.created | date:"b d, Y - h:i a" | title }}
                             </dt>
                             <dd>
                                 @{{ tweet.username }}:
