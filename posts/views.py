@@ -5,6 +5,22 @@ from django.shortcuts import render, get_object_or_404
 from posts.models import Post
 
 
+def post_list(request):
+    page = request.GET.get('page')
+
+    posts = Post.objects.all().order_by('-published')
+    paginator = Paginator(posts, 10)
+
+    try:
+        posts = paginator.page(page)
+    except PageNotAnInteger:
+        posts = paginator.page(1)
+    except EmptyPage:
+        posts = paginator.page(paginator.num_pages)
+
+    return render(request, 'posts/list.html', {'posts': posts,})
+
+
 def single(request, slug=''):
     post = get_object_or_404(Post, slug=slug)
 

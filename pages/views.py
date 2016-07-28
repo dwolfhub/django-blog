@@ -7,16 +7,24 @@ from .models import Page
 import oauth2
 from datetime import datetime
 import json
-from django.utils.dateparse import parse_datetime
 
 
 def home(request):
     page = get_object_or_404(Page, slug='home')
     posts = Post.objects.order_by('-published')[:5]
 
-    tweets = cache.get_or_set('tweets', get_tweets(), 3600)
+    tweets = cache.get('tweets')
+    if not tweets:
+        tweets = get_tweets()
+        cache.set('tweets', tweets)
 
     return render(request, 'pages/home.html', {'page': page, 'posts': posts, 'tweets': tweets,})
+
+
+def about(request):
+    page = get_object_or_404(Page, slug='about')
+
+    return render(request, 'pages/about.html', {'page': page,})
 
 
 def get_tweets():

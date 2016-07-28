@@ -1,0 +1,24 @@
+{% extends "blog/layout.html" %}
+
+{% block body %}
+    <h1>Blog Posts</h1>
+    <ul class="list-unstyled">
+        {% for post in posts %}
+            <li>
+                {{ post.published | date:"b d, Y - h:i a" | title }}
+                <a href="{% url 'posts:single' post.slug %}">
+                    {{ post.title }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    {% if posts.has_previous %}
+        <a class="btn btn-sm btn-info" href="?page={{ posts.previous_page_number }}">&laquo; Previous</a>
+    {% endif %}
+    {% if posts.has_next %}
+        <a class="btn btn-sm btn-info" href="?page={{ posts.next_page_number }}">Next &raquo;</a>
+    {% endif %}
+
+
+{% endblock %}
