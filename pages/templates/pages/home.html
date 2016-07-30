@@ -18,7 +18,7 @@
                     <dl>
                         {% for post in posts %}
                             <dt>
-                                {{ post.published | date:"b d, Y - h:i a" | title}}
+                                {{ post.published | date:"b m, H:i" | title}}
                             </dt>
                             <dd>
                                 <a href="{% url 'posts:single' post.slug %}">
@@ -36,14 +36,20 @@
                     <h2 class="panel-title">Tweets</h2>
                 </div>
                 <div class="panel-body">
-                    <dl>
+                    <dl class="">
                         {% for tweet in tweets %}
                             <dt>
-                                {{ tweet.created | date:"b d, Y - h:i a" | title }}
+                                {{ tweet.created | date:"b m, H:i" | title }}
                             </dt>
                             <dd>
-                                @{{ tweet.username }}:
-                                {{ tweet.text }}
+                                {{ tweet.text | safe }}
+                            </dd>
+                        {% empty %}
+                            <dt>
+                                No Tweets Found
+                            </dt>
+                            <dd>
+                                Check back later
                             </dd>
                         {% endfor %}
                     </dl>

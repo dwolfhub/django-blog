@@ -66,6 +66,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'pages.context_processors.pages_processor',
             ],
         },
     },
@@ -126,9 +127,6 @@ TWITTER_API_AUTH = {
     'key': '',
     'secret': '',
 }
-
-
-
 
 try:
     from local_settings import *

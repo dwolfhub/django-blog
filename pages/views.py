@@ -1,12 +1,14 @@
-from django.shortcuts import get_object_or_404, render
-from django.core.cache import cache
+import json
+from datetime import datetime
 
+import oauth2
 from django.conf import settings
+from django.core.cache import cache
+from django.shortcuts import get_object_or_404, render
+from ttp.ttp import Parser as TweetParser
+
 from posts.models import Post
 from .models import Page
-import oauth2
-from datetime import datetime
-import json
 
 
 def home(request):
@@ -18,7 +20,8 @@ def home(request):
         tweets = get_tweets()
         cache.set('tweets', tweets)
 
-    return render(request, 'pages/home.html', {'page': page, 'posts': posts, 'tweets': tweets,})
+    return render(request, 'pages/home.html',
+                  {'page': page, 'posts': posts, 'tweets': tweets,})
 
 
 def about(request):
@@ -34,21 +37,25 @@ def get_tweets():
         key=settings.TWITTER_API_AUTH['consumer_key'],
         secret=settings.TWITTER_API_AUTH['consumer_secret']
     )
-    token = oauth2.Token(key=settings.TWITTER_API_AUTH['key'], secret=settings.TWITTER_API_AUTH['secret'])
+    token = oauth2.Token(key=settings.TWITTER_API_AUTH['key'],
+                         secret=settings.TWITTER_API_AUTH['secret'])
     client = oauth2.Client(consumer, token)
-    resp, content = client.request('https://api.twitter.com/1.1/statuses/user_timeline.json?count=5')
+    resp, content = client.request(
+        'https://api.twitter.com/1.1/statuses/user_timeline.json?count=5')
 
     if content:
         content = json.loads(content)
         for tweet in content:
             # Take out parts of the datetime string that are tough to parse
             date_parts = tweet['created_at'].split(' ')
-            date_string = '{} {} {} {}'.format(date_parts[1], date_parts[2], date_parts[3], date_parts[5])
+            date_string = '{} {} {} {}'.format(date_parts[1], date_parts[2],
+                                               date_parts[3], date_parts[5])
             date_obj = datetime.strptime(date_string, '%b %d %H:%M:%S %Y')
             tweets.append({
                 'created': date_obj,
-                'text': tweet['text'],
-                'url': 'https://twitter.com/statuses/{}'.format(tweet['id_str']),
+                'text': TweetParser().parse(tweet['text']).html,
+                'url': 'https://twitter.com/statuses/{}'.format(
+                    tweet['id_str']),
                 'username': tweet['user']['screen_name'],
             })
 

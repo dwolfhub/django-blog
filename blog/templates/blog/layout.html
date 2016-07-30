@@ -1,73 +1,81 @@
 {% load staticfiles %}
 <!doctype html>
 <html>
-    <head>
-        <title>{% block title %}{% endblock %}</title>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <link rel="stylesheet" href="{% static "bootstrap.min.css" %}">
-    </head>
-    <body>
-        <nav class="navbar navbar-default navbar-static-top">
-            <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed"
-                            data-toggle="collapse" data-target="#navbar"
-                            aria-expanded="false" aria-controls="navbar">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="{% url 'pages:home' %}">The
-                        Blog
-                        Site</a>
-                </div>
-                <div id="navbar" class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav">
-                        <li {% if request.get_full_path == '/posts/' %}class="active"{% endif %}>
-                            <a href="{% url 'posts:list' %}">Blog</a>
-                        </li>
-                        <li {% if request.get_full_path == '/about' %}class="active"{% endif %}>
-                            <a href="{% url 'pages:about' %}">About</a>
-                        </li>
-                        <li {% if request.get_full_path == '/contact' %}class="active"{% endif %}>
-                            <a href="#contact"></a>
+    <title>{% block title %}{% endblock %}</title>
+
+    <link rel="stylesheet" href="{% static "bootstrap.min.css" %}">
+</head>
+<body>
+    <nav class="navbar navbar-default navbar-static-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed"
+                        data-toggle="collapse" data-target="#navbar"
+                        aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="{% url 'pages:home' %}">
+                    The Blog Site
+                </a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li {% if request.get_full_path == '/posts/' %}class="active"{% endif %}>
+                        <a href="{% url 'posts:list' %}">Blog</a>
+                    </li>
+                    {% for page in pages %}
+                        <li></li>
+                        {% with page_full_path='/'|add:page.slug %}
+                            <li {% if request.get_full_path == page_full_path %}class="active"{% endif %}>
+                            {% comment %}@todo these urls and routing{% endcomment %}
+                                <a href="{{ page.slug }}">{{ page.title | title }}</a>
+                            </li>
+                        {% endwith %}
+                    {% endfor %}
+                </ul>
+                {% if user.is_authenticated %}
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="{% url 'admin:index' %}">
+                                Admin
+                            </a>
                         </li>
                     </ul>
-                    {% if user.is_authenticated %}
-                        <ul class="nav navbar-nav navbar-right">
-                            <li>
-                                <a href="{% url 'admin:index' %}">
-                                    <i class="glyphicon glyphicon-user"></i> Admin
-                                </a>
-                            </li>
-                        </ul>
-                    {% endif %}
-                </div>
+                {% endif %}
             </div>
-        </nav>
-
-        <div class="container">
-            {% block body %}{% endblock %}
         </div>
+    </nav>
 
-        <footer class="footer">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-6">
-                        <p class="text-muted">&copy;{% now "Y" %} Daniel
-                            Wolf</p>
-                    </div>
-                    <div class="col-md-6">
-                        <p class="text-muted text-right">Made With &hearts;</p>
-                    </div>
+    <div class="container">
+        {% block body %}{% endblock %}
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="text-muted">
+                        &copy;{% now "Y" %} Daniel Wolf
+                    </p>
+                </div>
+                <div class="col-md-6">
+                    <p class="text-muted text-right">Made With &hearts;</p>
                 </div>
             </div>
-        </footer>
+        </div>
+    </footer>
 
-        {% block scripts_before %}{% endblock %}
-        <script src="{% static "jquery.min.js" %}"></script>
-        <script src="{% static "bootstrap.min.js" %}"></script>
-        {% block scripts_after %}{% endblock %}
-    </body>
+    {% block scripts_before %}{% endblock %}
+    <script src="{% static "jquery.min.js" %}"></script>
+    <script src="{% static "bootstrap.min.js" %}"></script>
+    {% block scripts_after %}{% endblock %}
+</body>
 </html>
